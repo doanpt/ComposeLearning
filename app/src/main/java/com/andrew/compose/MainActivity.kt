@@ -53,7 +53,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,8 +69,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.andrew.compose.ui.MainViewModel
+import com.andrew.compose.ui.name.NameListPage
 import com.andrew.compose.ui.theme.ComposeTheme
-import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 data class BottomNavigationItem(
@@ -80,7 +82,7 @@ data class BottomNavigationItem(
     val unselectedIcon: ImageVector,
 )
 
-@EntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +102,9 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
@@ -119,8 +123,8 @@ fun MainScreen() {
         )
     )
     val navigationState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    var selectedItemIndex by rememberSaveable {
-        mutableIntStateOf(0)
+    val selectedItemIndex by rememberSaveable {
+        viewModel.selectedPageIndex
     }
     val pagerState = rememberPagerState(pageCount = {
         3
@@ -144,7 +148,7 @@ fun MainScreen() {
                         Text(text = drawerItem.title)
                     }, selected = index == selectedItemIndex, onClick = {
                         scope.launch {
-                            selectedItemIndex = index
+                            viewModel.changeSelectedPage(index)
                             pagerState.scrollToPage(selectedItemIndex)
                             navigationState.close()
                         }
@@ -199,8 +203,8 @@ fun MainScreen() {
                             selected = selectedItemIndex == index,
                             onClick = {
                                 scope.launch {
-                                    selectedItemIndex = index
-                                    pagerState.scrollToPage(selectedItemIndex)
+                                    viewModel.changeSelectedPage(index)
+                                    pagerState.scrollToPage(index)
                                 }
                             },
                             label = {
@@ -231,7 +235,7 @@ fun MainScreen() {
             Box(modifier = Modifier.padding(paddings)) {
                 HorizontalPager(state = pagerState) { page ->
                     when (page) {
-                        0 -> ContentView()
+                        0 -> NameListPage(viewModel = viewModel)
                         1 -> Page1()
                         2 -> Page2()
                         else -> throw IllegalArgumentException("Unknown page index: $page")
