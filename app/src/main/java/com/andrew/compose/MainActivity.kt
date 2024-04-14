@@ -71,6 +71,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.andrew.compose.ui.theme.ComposeTheme
+import dagger.hilt.EntryPoint
 import kotlinx.coroutines.launch
 
 data class BottomNavigationItem(
@@ -79,6 +80,7 @@ data class BottomNavigationItem(
     val unselectedIcon: ImageVector,
 )
 
+@EntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
