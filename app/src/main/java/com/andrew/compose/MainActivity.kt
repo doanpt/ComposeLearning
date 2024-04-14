@@ -3,6 +3,7 @@ package com.andrew.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -93,7 +96,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen() {
     val items = listOf(
@@ -117,6 +120,9 @@ fun MainScreen() {
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
+    val pagerState = rememberPagerState(pageCount = {
+        3
+    })
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerContent = {
@@ -135,8 +141,11 @@ fun MainScreen() {
                     NavigationDrawerItem(label = {
                         Text(text = drawerItem.title)
                     }, selected = index == selectedItemIndex, onClick = {
-                        selectedItemIndex = index
-                        // TODO navigate here
+                        scope.launch {
+                            selectedItemIndex = index
+                            pagerState.scrollToPage(selectedItemIndex)
+                            navigationState.close()
+                        }
                     }, icon = {
                         Icon(
                             imageVector = if (index == selectedItemIndex) {
@@ -187,8 +196,10 @@ fun MainScreen() {
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
                             onClick = {
-                                selectedItemIndex = index
-                                // TODO navigate here
+                                scope.launch {
+                                    selectedItemIndex = index
+                                    pagerState.scrollToPage(selectedItemIndex)
+                                }
                             },
                             label = {
                                 Text(text = item.title)
@@ -216,11 +227,28 @@ fun MainScreen() {
             }
         ) { paddings ->
             Box(modifier = Modifier.padding(paddings)) {
-                ContentView()
+                HorizontalPager(state = pagerState) { page ->
+                    when (page) {
+                        0 -> ContentView()
+                        1 -> Page1()
+                        2 -> Page2()
+                        else -> throw IllegalArgumentException("Unknown page index: $page")
+                    }
+                }
             }
         }
 
     }
+}
+
+@Composable
+fun Page1() {
+    Text(text = "Page 1")
+}
+
+@Composable
+fun Page2() {
+    Text(text = "Page 2")
 }
 
 @Composable
