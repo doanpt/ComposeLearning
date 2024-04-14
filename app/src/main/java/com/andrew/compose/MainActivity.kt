@@ -3,13 +3,21 @@ package com.andrew.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.andrew.compose.ui.theme.ComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    ContentView()
                 }
             }
         }
@@ -30,10 +38,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun ContentView() {
     Text(
-        text = "Hello $name!",
-        modifier = modifier
+        text = "Welcome to Compose",
+        color = Color.Black,
+        fontSize = 20.sp,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Bold,
+        // style = TextStyle(
+        //     color = Color.Blue,
+        //     fontSize = 80.sp,
+        //     fontWeight = FontWeight.Thin
+        // )
     )
 }
 
@@ -41,6 +57,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ComposeTheme {
-        Greeting("Android")
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            ContentView()
+        }
     }
 }
