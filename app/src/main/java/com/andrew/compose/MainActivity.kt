@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -147,6 +149,14 @@ fun MainScreen() {
                     )
                 }
             }
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Add") },
+                icon = { Icon(Icons.Filled.Add, contentDescription = "") },
+                onClick = {
+                }
+            )
         }
     ) { paddings ->
         Box(modifier = Modifier.padding(paddings)) {
